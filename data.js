@@ -195,6 +195,6 @@ const SITIOS = [
  *
  * El resto del sitio (mapa, filtros, popups) no necesita ningún cambio.
  */
-async function fetchSites() {
+async function fetchSites(https://script.google.com/macros/s/AKfycbx0MYHjQ-RwqiSdLVBLrjHwhDGuDsgWmSGlWOL9ensc5EY_6auwgsDj66ChTGcOUgiWaQ/exec) {
   return SITIOS;
 }
