@@ -187,7 +187,7 @@ const SITIOS = [
  * reemplaza el cuerpo de esta función por algo así:
  *
  * async function fetchSites() {
- *   const URL = "https://script.google.com/macros/s/TU_ID_DE_DESPLIEGUE/exec";
+ *   const URL = "https://script.google.com/macros/s/AKfycbx0MYHjQ-RwqiSdLVBLrjHwhDGuDsgWmSGlWOL9ensc5EY_6auwgsDj66ChTGcOUgiWaQ/exec";
  *   const res = await fetch(URL);
  *   const rows = await res.json();
  *   return rows.map(r => ({ ...r, lat: parseFloat(r.lat), lng: parseFloat(r.lng) }));
