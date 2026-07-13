@@ -38,14 +38,29 @@ const NLMap = (function () {
   function buildPopup(sitio) {
     const cfg = TIPOS_SITIO[sitio.tipo] || {};
     const acceso = TIPOS_ACCESO[sitio.acceso] || {};
+
+    // la imagen solo se muestra si hay URL; si falla al cargar, se oculta sola
+    const imgHtml = sitio.imagen
+      ? `<img src="${sitio.imagen}" alt="${sitio.nombre}" onerror="this.style.display='none'">`
+      : "";
+
+    // links opcionales: sitio web y redes sociales
+    const links = [];
+    if (sitio.sitio_web) links.push(`<a href="${sitio.sitio_web}" target="_blank" rel="noopener">🌐 Sitio web</a>`);
+    if (sitio.redes_sociales) links.push(`<a href="${sitio.redes_sociales}" target="_blank" rel="noopener">📱 Redes sociales</a>`);
+    const linksHtml = links.length
+      ? `<p class="meta links">${links.join(" &nbsp;·&nbsp; ")}</p>`
+      : "";
+
     return `
       <div class="pin-popup">
-        <img src="${sitio.imagen}" alt="${sitio.nombre}">
+        ${imgHtml}
         <span class="tag">${cfg.label || sitio.tipo} · ${acceso.label || sitio.acceso}</span>
         <h4>${sitio.nombre}</h4>
         <p class="meta">${sitio.municipio} — ${sitio.direccion}</p>
         <p class="desc">${sitio.descripcion}</p>
         ${sitio.telefono ? `<p class="meta">📞 ${sitio.telefono}</p>` : ""}
+        ${linksHtml}
       </div>`;
   }
 
@@ -66,8 +81,14 @@ const NLMap = (function () {
     ).addTo(map);
 
     sitios.forEach((sitio) => {
-      if (typeof sitio.lat !== "number" || typeof sitio.lng !== "number") return;
-      const marker = L.marker([sitio.lat, sitio.lng], { icon: buildIcon(sitio) })
+      // se salta filas incompletas (sin lat/lng válidos) en vez de romper el mapa
+      const lat = Number(sitio.lat);
+      const lng = Number(sitio.lng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        console.warn("Sitio sin lat/lng válidos, se omite del mapa:", sitio.nombre || sitio.id);
+        return;
+      }
+      const marker = L.marker([lat, lng], { icon: buildIcon(sitio) })
         .bindPopup(buildPopup(sitio));
       marker.addTo(map);
       markers.push({ marker, tipo: sitio.tipo, acceso: sitio.acceso });
